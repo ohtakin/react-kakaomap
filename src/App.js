@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import { useKakao } from "./components";
-import { Marker } from "./components/kakaomap";
+import { Marker, MarkerClusterer } from "./components/kakaomap";
 import { vehicles } from "./data/vehicles";
 
 function App() {
@@ -24,10 +24,19 @@ function App() {
     />
   ));
 
+  const options = {
+    gridSize: 35,
+    averageCenter: true,
+    minLevel: 6,
+    disableClickZoom: true
+  };
+
   return (
     <div className="App">
       <Kakao lng={gps.lng} lat={gps.lat}>
-        {Markers}
+        <MarkerClusterer options={options}>
+          {Markers}
+        </MarkerClusterer>
       </Kakao>
     </div>
   );

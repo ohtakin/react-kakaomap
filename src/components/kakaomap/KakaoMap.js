@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import FullScreen from "../fullscreen/FullScreen";
 import Wrapper from "../Wrapper";
 
@@ -10,7 +10,7 @@ const KakaoMap = props => {
     kakao: props.kakao
   });
   const canvas_id = "map-canvas";
-  const handleLoaded = node => {
+  const handleLoaded = useCallback(node => {
     const { kakao, lat, lng, level, zoom } = props;
     if (state.map || node === null) {
       return;
@@ -28,15 +28,16 @@ const KakaoMap = props => {
       );
     }
     setState({ map, kakao });
-  };
-
+  });
+  
   return (
     <Wrapper id={canvas_id}>
       <FullScreen id="full-screen" canvas={canvas_id} />
       <Wrapper id="kakao-map" ref={handleLoaded}>
-        <MapContext.Provider value={state}>
+        {state.map === null? null : 
+          <MapContext.Provider value={state}>
           {props.children}
-        </MapContext.Provider>
+        </MapContext.Provider>}
       </Wrapper>
     </Wrapper>
   );

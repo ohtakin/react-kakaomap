@@ -1,17 +1,17 @@
 # 지도 api 사용 샘플입니다.
 
-.env.development .env.production 파일에 REACT_APP_KAKAO_API_KEY=apikey 추가 필요합니다.
+'.env.development', '.env.production' 파일에 REACT_APP_KAKAO_API_KEY=apikey 추가 필요합니다.
 
 ## - Kakao map
 
-App.css
+### App.css
 
     .App {
       width: 800px;
       height: 400px;
     }
 
-App.js
+### App.js
 
     import { withJs, withKakaoMap } from "./components";
     import KakaoMap from "./components/kakaomap";
@@ -33,7 +33,7 @@ App.js
 
     export default App;
 
-> or
+or
 
     import { useKakao } from "./components";
 
@@ -53,6 +53,45 @@ App.js
 
     export default App;
 
+## - Marker
+기본 Marker 사용 시 props에 position 적용(필수)  
+
+    position={{ lat, lng }}
+
+MarkerImage 사용시 props에 image 추가.
+
+    image={{
+      url: require("./images/down-arrow-icon.svg"),
+      width: 30,
+      height: 30
+    }}
+
+Marker
+
+    ...
+    <Marker
+      position={{...}}
+      image={{...}}
+    />
+    ...
+
+## - MarkerClusterer
+MarkerClusterer 사용 시 props에 options 적용(필수)
+
+    const options = {
+      gridSize: 35,
+      averageCenter: true,
+      minLevel: 6,
+      disableClickZoom: true
+    };
+
+MarkerClusterer
+
+    ...
+    <MarkerClusterer options={options}>
+      {Markers}
+    </MarkerClusterer>
+    ...
 ---
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

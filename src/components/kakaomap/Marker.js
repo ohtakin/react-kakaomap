@@ -1,17 +1,16 @@
 import React, { useContext, useState, useEffect, useCallback } from "react";
 import { MapContext } from "./KakaoMap";
+import { MarkerClustererContext } from "./MarkerClusterer";
+
 const Marker = props => {
   const { kakao, map } = useContext(MapContext);
+  const { clusterer } = useContext(MarkerClustererContext);
   const [state, setState] = useState({
     marker: null,
     kakao,
-    map
+    map,
+    clusterer
   });
-
-  const setMarker = useCallback(
-    (lat, lng) =>
-      new kakao.maps.Marker({ position: new kakao.maps.LatLng(lat, lng) })
-  );
 
   const setMarkerImage = useCallback((marker, image) => {
     const { url, witdh, hight } = image;
@@ -23,26 +22,13 @@ const Marker = props => {
   });
 
   useEffect(() => {
-    const { position, image, clusterer } = props;
+    const { position, image } = props;
     const { lat, lng } = position;
-    const marker = setMarker(lat, lng);
+    const marker = new kakao.maps.Marker({ position: new kakao.maps.LatLng(lat, lng) });
 
     if (image) setMarkerImage(marker, image);
-    if (clusterer) {
-      clusterer.addMarker(marker);
-    } else {
-      marker.setMap(map);
-    }
-
-    setState({ ...state, marker: marker });
-    return () => {
-      marker.setMap(null);
-    };
-  }, [map]);
-
-  useEffect(() => {
-    const { marker } = state;
-    if (marker === null) return;
+    (clusterer)? clusterer.addMarker(marker) : marker.setMap(map);
+    
     const onMouseOver = () => {
       const { onMouseOver } = props;
       if (onMouseOver) props.onMouseOver();
@@ -53,15 +39,23 @@ const Marker = props => {
     };
     kakao.maps.event.addListener(marker, "mouseover", onMouseOver);
     kakao.maps.event.addListener(marker, "mouseout", onMouseOut);
+    setState({ ...state, marker: marker });
     return () => {
+      marker.setMap(null);
       kakao.maps.event.removeListener(state.marker, "mouseover", onMouseOver);
       kakao.maps.event.removeListener(state.marker, "mouseout", onMouseOut);
     };
-  }, [state.marker]);
+  }, []);
 
-  return (
-    <MapContext.Provider value={state}>{props.children}</MapContext.Provider>
-  );
+  if(state.marker === null) {
+    return null;
+  } else {
+    return (
+      <MapContext.Provider value={state}>
+        {props.children}
+      </MapContext.Provider>
+    );
+  }
 };
 
 export default Marker;
