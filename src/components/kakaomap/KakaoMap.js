@@ -27,7 +27,7 @@ const KakaoMap = props => {
         kakao.maps.ControlPosition[zoom]
       );
     }
-    setState({ map });
+    setState({ map, kakao });
   };
 
   return (

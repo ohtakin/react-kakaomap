@@ -9,4 +9,6 @@ const KakaoMap = Loadable({
   loader: () => import("./KakaoMap"),
   loading: Loading
 });
+
 export default KakaoMap;
+export { default as Marker } from "./Marker";
