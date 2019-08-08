@@ -1,3 +1,19 @@
+# 지도 api 사용 샘플입니다.
+
+.env.development .env.production 파일에 REACT_APP_KAKAO_API_KEY=apikey 추가 필요합니다.
+
+## - Kakao map
+
+> import { withJs, withKakaoMap } from "./> components";  
+> import KakaoMap from "./components/kakaomap";
+>
+> const Kakao = withJs(
+> \`//dapi.kakao.com/v2/maps/sdk.js?appkey=\${process.env.REACT_APP_KAKAO_API_KEY}&libraries=services,clusterer,drawing&autoload=false`)(withKakaoMap(KakaoMap));
+>
+> \<Kakao lng={gps.lng} lat={gps.lat} />
+
+---
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
