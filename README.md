@@ -104,6 +104,16 @@ CustomOverlay 사용 시 props에 options 적용
     />
     ...
 
+## - Polyline
+
+Polyline 사용 시 props에 options 적용
+
+    ...
+    <Polyline
+      options={{ path, strokeColor: #rgb, strokeWeight: integer }}
+    />
+    ...
+
 ---
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

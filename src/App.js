@@ -1,8 +1,14 @@
 import React, { Fragment } from "react";
 import "./App.css";
 import { useKakao } from "./components";
-import { Marker, MarkerClusterer, CustomOverlay } from "./components/kakaomap";
+import {
+  Marker,
+  MarkerClusterer,
+  CustomOverlay,
+  Polyline
+} from "./components/kakaomap";
 import { vehicles } from "./data/vehicles";
+import { path } from "./data/path";
 
 function App() {
   const gps = { lat: 37.54074492224992, lng: 126.96414483172607 };
@@ -43,6 +49,9 @@ function App() {
     <div className="App">
       <Kakao options={{ lng: gps.lng, lat: gps.lat, zoom: "BOTTOMRIGHT" }}>
         <MarkerClusterer options={options}>{Markers}</MarkerClusterer>
+        <Polyline
+          options={{ path: path, strokeColor: "#0000ff", strokeWeight: 4 }}
+        />
       </Kakao>
     </div>
   );
