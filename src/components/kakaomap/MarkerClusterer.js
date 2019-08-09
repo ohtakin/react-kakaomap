@@ -8,19 +8,19 @@ const MarkerClusterer = props => {
   const [state, setState] = useState({
     clusterer: null
   });
-  
+
   const { options } = props;
   useEffect(() => {
     const clusterer = new kakao.maps.MarkerClusterer(options);
     clusterer.setMap(map);
     kakao.maps.event.addListener(clusterer, "clustered", () => {});
-    setState({ clusterer: clusterer })
+    setState({ clusterer });
     return () => {
       clusterer.setMap(null);
-    }
+    };
   }, []);
 
-  if(state.clusterer === null) {
+  if (state.clusterer === null) {
     return null;
   } else {
     return (

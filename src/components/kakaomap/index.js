@@ -13,3 +13,4 @@ const KakaoMap = Loadable({
 export default KakaoMap;
 export { default as Marker } from "./Marker";
 export { default as MarkerClusterer } from "./MarkerClusterer";
+export { default as CustomOverlay } from "./CustomOverlay";

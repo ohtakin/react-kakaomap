@@ -12,23 +12,27 @@ const Marker = props => {
     clusterer
   });
 
-  const setMarkerImage = useCallback((marker, image) => {
-    const { url, witdh, hight } = image;
-    const markerImage = new kakao.maps.MarkerImage(
-      url,
-      new kakao.maps.Size(witdh, hight)
-    );
-    marker.setImage(markerImage);
-  });
+  const setMarkerImage = useCallback(
+    (marker, image) => {
+      const { url, witdh, hight } = image;
+      const markerImage = new kakao.maps.MarkerImage(
+        url,
+        new kakao.maps.Size(witdh, hight)
+      );
+      marker.setImage(markerImage);
+    },
+    [props.image]
+  );
 
   useEffect(() => {
-    const { position, image } = props;
-    const { lat, lng } = position;
-    const marker = new kakao.maps.Marker({ position: new kakao.maps.LatLng(lat, lng) });
+    const { lat, lng, image } = props.options;
+    const marker = new kakao.maps.Marker({
+      position: new kakao.maps.LatLng(lat, lng)
+    });
 
     if (image) setMarkerImage(marker, image);
-    (clusterer)? clusterer.addMarker(marker) : marker.setMap(map);
-    
+    clusterer ? clusterer.addMarker(marker) : marker.setMap(map);
+
     const onMouseOver = () => {
       const { onMouseOver } = props;
       if (onMouseOver) props.onMouseOver();
@@ -39,7 +43,7 @@ const Marker = props => {
     };
     kakao.maps.event.addListener(marker, "mouseover", onMouseOver);
     kakao.maps.event.addListener(marker, "mouseout", onMouseOut);
-    setState({ ...state, marker: marker });
+    setState({ ...state, marker });
     return () => {
       marker.setMap(null);
       kakao.maps.event.removeListener(state.marker, "mouseover", onMouseOver);
@@ -47,13 +51,11 @@ const Marker = props => {
     };
   }, []);
 
-  if(state.marker === null) {
+  if (state.marker === null) {
     return null;
   } else {
     return (
-      <MapContext.Provider value={state}>
-        {props.children}
-      </MapContext.Provider>
+      <MapContext.Provider value={state}>{props.children}</MapContext.Provider>
     );
   }
 };

@@ -2,3 +2,12 @@
   width: 800px;
   height: 400px;
 }
+
+.custom_overlay {
+  margin-top: -25px;
+  margin-left: 120px;
+  font-weight: bolder;
+  font-size: small;
+  background: white;
+  padding: 2px;
+}

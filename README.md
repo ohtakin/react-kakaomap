@@ -1,8 +1,12 @@
-# 지도 api 사용 샘플입니다.
+# Kakao map api 사용 샘플입니다.
 
 '.env.development', '.env.production' 파일에 REACT_APP_KAKAO_API_KEY=apikey 추가 필요합니다.
 
-## - Kakao map
+## - KakaoMap
+
+KakaoMap 사용 시 props에 options 적용
+
+    options={{ lng, lat }
 
 ### App.css
 
@@ -23,10 +27,9 @@
     )(withKakaoMap(KakaoMap));
 
     function App() {
-      const gps = { lat: 37.54074492224992, lng: 126.96414483172607 };
       return (
         <div className="App">
-          <Kakao lng={gps.lng} lat={gps.lat} />
+          <Kakao options={{ lng, lat, level: integer, zoom: string }} />
         </div>
       );
     }
@@ -38,7 +41,6 @@ or
     import { useKakao } from "./components";
 
     function App() {
-      const gps = { lat: 37.54074492224992, lng: 126.96414483172607 };
       const Kakao = useKakao(
         `//dapi.kakao.com/v2/maps/sdk.js?appkey=${
           process.env.REACT_APP_KAKAO_API_KEY
@@ -46,7 +48,7 @@ or
       );
       return (
         <div className="App">
-          <Kakao lng={gps.lng} lat={gps.lat} />
+          <Kakao options={{ lng, lat, level: integer, zoom: string }} />
         </div>
       );
     }
@@ -54,44 +56,54 @@ or
     export default App;
 
 ## - Marker
-기본 Marker 사용 시 props에 position 적용(필수)  
 
-    position={{ lat, lng }}
+기본 Marker 사용 시 props에 options 적용
 
-MarkerImage 사용시 props에 image 추가.
+    options={{ lat, lng, image }}
+
+MarkerImage 사용시 options에 image 추가.
 
     image={{
-      url: require("./images/down-arrow-icon.svg"),
-      width: 30,
-      height: 30
+      url: require("...path"),
+      width: integer,
+      height: integer
     }}
 
 Marker
 
     ...
-    <Marker
-      position={{...}}
-      image={{...}}
-    />
+    <Marker options={{...}} />
     ...
 
 ## - MarkerClusterer
-MarkerClusterer 사용 시 props에 options 적용(필수)
+
+MarkerClusterer 사용 시 props에 options 적용
 
     const options = {
-      gridSize: 35,
-      averageCenter: true,
-      minLevel: 6,
-      disableClickZoom: true
+      gridSize: integer
+      averageCenter: boolean,
+      minLevel: integer,
+      disableClickZoom: boolean
     };
 
 MarkerClusterer
 
     ...
     <MarkerClusterer options={options}>
-      {Markers}
+      <Marker /> or {Markers}
     </MarkerClusterer>
     ...
+
+## - CustomOverlay
+
+CustomOverlay 사용 시 props에 options 적용
+
+    ...
+    <CustomOverlay
+      options={{ lng, lat, content: string }}
+    />
+    ...
+
 ---
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

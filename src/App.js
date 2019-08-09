@@ -1,7 +1,7 @@
-import React from "react";
+import React, { Fragment } from "react";
 import "./App.css";
 import { useKakao } from "./components";
-import { Marker, MarkerClusterer } from "./components/kakaomap";
+import { Marker, MarkerClusterer, CustomOverlay } from "./components/kakaomap";
 import { vehicles } from "./data/vehicles";
 
 function App() {
@@ -12,16 +12,24 @@ function App() {
     }&libraries=services,clusterer,drawing&autoload=false`
   );
 
-  const Markers = vehicles.map(({ lat, lng }, index) => (
-    <Marker
-      key={index}
-      position={{ lat, lng }}
-      image={{
-        url: require("./images/down-arrow-icon.svg"),
-        width: 30,
-        height: 30
-      }}
-    />
+  const Markers = vehicles.map(({ lat, lng, plateNumber }, index) => (
+    <Fragment key={index}>
+      <Marker
+        options={{
+          lat,
+          lng,
+          image: {
+            url: require("./images/down-arrow-icon.svg"),
+            width: 30,
+            height: 30
+          }
+        }}
+      />
+      <CustomOverlay
+        className="custom_overlay"
+        options={{ lng, lat, content: plateNumber }}
+      />
+    </Fragment>
   ));
 
   const options = {
@@ -33,10 +41,8 @@ function App() {
 
   return (
     <div className="App">
-      <Kakao lng={gps.lng} lat={gps.lat}>
-        <MarkerClusterer options={options}>
-          {Markers}
-        </MarkerClusterer>
+      <Kakao options={{ lng: gps.lng, lat: gps.lat, zoom: "BOTTOMRIGHT" }}>
+        <MarkerClusterer options={options}>{Markers}</MarkerClusterer>
       </Kakao>
     </div>
   );
