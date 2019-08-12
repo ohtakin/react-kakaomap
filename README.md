@@ -114,6 +114,26 @@ Polyline 사용 시 props에 options 적용
     />
     ...
 
+## - InfoWindoWithMarker
+
+InfoWindoWithMarker 사용 시 props에 options 적용
+Marker 'onMouseOver', 'onMouseOut' event 발생 시 InfoWindo 'open', 'close' 동작
+
+    ...
+    <InfoWindoWithMarker
+      options={{
+        lat,
+        lng,
+        content: plateNumber,
+        image: {
+          url: require("./images/map-pin.png"),
+          width: 30,
+          height: 30
+        }
+      }}
+    />
+    ...
+
 ---
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

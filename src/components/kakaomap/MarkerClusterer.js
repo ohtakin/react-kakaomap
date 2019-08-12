@@ -9,8 +9,8 @@ const MarkerClusterer = props => {
     clusterer: null
   });
 
-  const { options } = props;
   useEffect(() => {
+    const { options } = props;
     const clusterer = new kakao.maps.MarkerClusterer(options);
     clusterer.setMap(map);
     kakao.maps.event.addListener(clusterer, "clustered", () => {});
@@ -20,12 +20,27 @@ const MarkerClusterer = props => {
     };
   }, []);
 
+  useEffect(() => {
+    const {
+      gridSize,
+      averageCenter,
+      minLevel,
+      disableClickZoom
+    } = props.options;
+    const { clusterer } = state;
+    if (clusterer === null) return;
+    if (gridSize) clusterer.setGridSize(gridSize);
+    if (averageCenter) clusterer.setAverageCenter(averageCenter);
+    if (minLevel) clusterer.setMinLevel(minLevel);
+    if (disableClickZoom) clusterer.setDisableClickZoom(disableClickZoom);
+  }, [props.options]);
+
   if (state.clusterer === null) {
     return null;
   } else {
     return (
       <MarkerClustererContext.Provider value={state}>
-        {props.children}
+        {state.clusterer === null ? null : props.children}
       </MarkerClustererContext.Provider>
     );
   }

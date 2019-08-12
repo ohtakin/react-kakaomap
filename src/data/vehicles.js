@@ -129,7 +129,7 @@ export const vehicles = [
     lat: 37.590065,
     lng: 126.800644,
     address: "경기도 김포시 고촌읍",
-    plateNumber: "12가185"
+    plateNumber: "12가1852"
   },
   {
     lat: 35.857834,

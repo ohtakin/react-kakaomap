@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { MapContext } from "./KakaoMap";
 import { MarkerClustererContext } from "./MarkerClusterer";
 
@@ -12,52 +12,53 @@ const Marker = props => {
     clusterer
   });
 
-  const setMarkerImage = useCallback(
-    (marker, image) => {
-      const { url, witdh, hight } = image;
-      const markerImage = new kakao.maps.MarkerImage(
-        url,
-        new kakao.maps.Size(witdh, hight)
-      );
-      marker.setImage(markerImage);
-    },
-    [props.image]
-  );
+  const setMarkerImage = (marker, image) => {
+    const { url, width, height } = image;
+    const markerImage = new kakao.maps.MarkerImage(
+      url,
+      new kakao.maps.Size(width, height)
+    );
+    marker.setImage(markerImage);
+  };
 
   useEffect(() => {
-    const { lat, lng, image } = props.options;
+    const { onMouseOver, onMouseOut, options } = props;
+    const { lat, lng, image } = options;
     const marker = new kakao.maps.Marker({
       position: new kakao.maps.LatLng(lat, lng)
     });
-
     if (image) setMarkerImage(marker, image);
     clusterer ? clusterer.addMarker(marker) : marker.setMap(map);
-
-    const onMouseOver = () => {
-      const { onMouseOver } = props;
-      if (onMouseOver) props.onMouseOver();
-    };
-    const onMouseOut = () => {
-      const { onMouseOut } = props;
-      if (onMouseOut) onMouseOut();
-    };
-    kakao.maps.event.addListener(marker, "mouseover", onMouseOver);
-    kakao.maps.event.addListener(marker, "mouseout", onMouseOut);
+    kakao.maps.event.addListener(marker, "mouseover", () => {
+      if (onMouseOver) onMouseOver(marker);
+    });
+    kakao.maps.event.addListener(marker, "mouseout", () => {
+      if (onMouseOut) onMouseOut(marker);
+    });
     setState({ ...state, marker });
     return () => {
       marker.setMap(null);
-      kakao.maps.event.removeListener(state.marker, "mouseover", onMouseOver);
-      kakao.maps.event.removeListener(state.marker, "mouseout", onMouseOut);
+      kakao.maps.event.removeListener(marker, "mouseover");
+      kakao.maps.event.removeListener(marker, "mouseout");
     };
   }, []);
 
-  if (state.marker === null) {
-    return null;
-  } else {
-    return (
-      <MapContext.Provider value={state}>{props.children}</MapContext.Provider>
-    );
-  }
+  useEffect(() => {
+    const { lat, lng } = props.options;
+    const { marker } = state;
+    if (marker === null) return;
+    const position = new kakao.maps.LatLng(lat, lng);
+    marker.setPosition(position);
+  }, [props.options.lat, props.options.lng]);
+
+  useEffect(() => {
+    const { image } = props.options;
+    const { marker } = state;
+    if (marker === null || image === null) return;
+    if (image) setMarkerImage(marker, image);
+  }, [props.options.image]);
+
+  return null;
 };
 
 export default Marker;

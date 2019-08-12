@@ -1,11 +1,12 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import "./App.css";
 import { useKakao } from "./components";
 import {
   Marker,
   MarkerClusterer,
   CustomOverlay,
-  Polyline
+  Polyline,
+  InfoWindoWithMarker
 } from "./components/kakaomap";
 import { vehicles } from "./data/vehicles";
 import { path } from "./data/path";
@@ -17,26 +18,30 @@ function App() {
       process.env.REACT_APP_KAKAO_API_KEY
     }&libraries=services,clusterer,drawing&autoload=false`
   );
+  const [vehicleData, setvehicleData] = useState(vehicles);
 
-  const Markers = vehicles.map(({ lat, lng, plateNumber }, index) => (
-    <Fragment key={index}>
-      <Marker
-        options={{
-          lat,
-          lng,
-          image: {
-            url: require("./images/down-arrow-icon.svg"),
-            width: 30,
-            height: 30
-          }
-        }}
-      />
-      <CustomOverlay
-        className="custom_overlay"
-        options={{ lng, lat, content: plateNumber }}
-      />
-    </Fragment>
-  ));
+  const Markers = vehicleData.map(
+    ({ lat, lng, plateNumber, visible }, index) => (
+      <Fragment key={index}>
+        <InfoWindoWithMarker
+          options={{
+            lat,
+            lng,
+            content: plateNumber,
+            image: {
+              url: require("./images/map-pin.png"),
+              width: 30,
+              height: 30
+            }
+          }}
+        />
+        <CustomOverlay
+          className="custom_overlay"
+          options={{ lng, lat, content: plateNumber }}
+        />
+      </Fragment>
+    )
+  );
 
   const options = {
     gridSize: 35,
