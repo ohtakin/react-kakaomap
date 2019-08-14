@@ -19,11 +19,13 @@ function App() {
     }&libraries=services,clusterer,drawing&autoload=false`
   );
   const [vehicleData, setvehicleData] = useState(vehicles);
-
-  const Markers = vehicleData.map(
-    ({ lat, lng, plateNumber, visible }, index) => (
+  const bounds = [];
+  const Markers = vehicleData.map(({ lat, lng, plateNumber }, index) => {
+    bounds.push({ lat, lng });
+    return (
       <Fragment key={index}>
         <InfoWindoWithMarker
+          delay={100 * index}
           options={{
             lat,
             lng,
@@ -40,8 +42,14 @@ function App() {
           options={{ lng, lat, content: plateNumber }}
         />
       </Fragment>
-    )
-  );
+    );
+  });
+
+  const polylineBounds = [];
+  path.forEach(p => {
+    const { lat, lng } = p;
+    polylineBounds.push({ lat, lng });
+  });
 
   const options = {
     gridSize: 35,
@@ -50,11 +58,27 @@ function App() {
     disableClickZoom: true
   };
 
+  const onZoomChang = map => {
+    const level = map.getLevel();
+    console.log("level: ", level);
+  };
+
   return (
     <div className="App">
-      <Kakao options={{ lng: gps.lng, lat: gps.lat, zoom: "BOTTOMRIGHT" }}>
+      <Kakao
+        onZoomChang={onZoomChang}
+        options={{
+          lat: gps.lat,
+          lng: gps.lng,
+          bounds: bounds,
+          zoom: "BOTTOMRIGHT",
+          mapType: "TOPLEFT"
+        }}
+      >
         <MarkerClusterer options={options}>{Markers}</MarkerClusterer>
         <Polyline
+          delay={10}
+          // bounds={false}
           options={{ path: path, strokeColor: "#0000ff", strokeWeight: 4 }}
         />
       </Kakao>

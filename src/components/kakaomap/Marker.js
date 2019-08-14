@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { MapContext } from "./KakaoMap";
 import { MarkerClustererContext } from "./MarkerClusterer";
+import { interval } from "rxjs";
+import { take } from "rxjs/operators";
 
 const Marker = props => {
   const { kakao, map } = useContext(MapContext);
@@ -22,24 +24,33 @@ const Marker = props => {
   };
 
   useEffect(() => {
-    const { onMouseOver, onMouseOut, options } = props;
+    const { onMouseOver, onMouseOut, options, delay } = props;
     const { lat, lng, image } = options;
     const marker = new kakao.maps.Marker({
       position: new kakao.maps.LatLng(lat, lng)
     });
     if (image) setMarkerImage(marker, image);
-    clusterer ? clusterer.addMarker(marker) : marker.setMap(map);
-    kakao.maps.event.addListener(marker, "mouseover", () => {
+
+    const delayedTime = interval(delay ? delay : 0);
+    delayedTime.pipe(take(1)).subscribe(x => {
+      clusterer ? clusterer.addMarker(marker) : marker.setMap(map);
+    });
+
+    const mouseOver = () => {
       if (onMouseOver) onMouseOver(marker);
-    });
-    kakao.maps.event.addListener(marker, "mouseout", () => {
+    };
+    const mouseOut = () => {
       if (onMouseOut) onMouseOut(marker);
-    });
+    };
+    kakao.maps.event.addListener(marker, "mouseover", mouseOver);
+    kakao.maps.event.addListener(marker, "mouseout", mouseOut);
+
     setState({ ...state, marker });
+
     return () => {
       marker.setMap(null);
-      kakao.maps.event.removeListener(marker, "mouseover");
-      kakao.maps.event.removeListener(marker, "mouseout");
+      kakao.maps.event.removeListener(marker, "mouseover", mouseOver);
+      kakao.maps.event.removeListener(marker, "mouseout", mouseOut);
     };
   }, []);
 

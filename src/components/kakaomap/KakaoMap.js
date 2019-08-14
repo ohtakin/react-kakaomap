@@ -10,9 +10,37 @@ const KakaoMap = props => {
     kakao: props.kakao
   });
 
+  const addZoomControl = (map, kakao, zoom) => {
+    if (zoom) {
+      map.addControl(
+        new kakao.maps.ZoomControl(),
+        kakao.maps.ControlPosition[zoom]
+      );
+    }
+  };
+
+  const addMapTypeControl = (map, kakao, mapType) => {
+    if (mapType) {
+      map.addControl(
+        new kakao.maps.MapTypeControl(),
+        kakao.maps.ControlPosition[mapType]
+      );
+    }
+  };
+
+  const setLatLngBounds = (map, kakao, bounds) => {
+    if (bounds) {
+      const latLngBounds = new kakao.maps.LatLngBounds();
+      bounds.forEach(b => {
+        latLngBounds.extend(new kakao.maps.LatLng(b.lat, b.lng));
+      });
+      map.setBounds(latLngBounds);
+    }
+  };
+
   const handleLoaded = useCallback(node => {
-    const { kakao } = props;
-    const { lat, lng, level, zoom } = props.options;
+    const { kakao, onZoomChang } = props;
+    const { lat, lng, level, zoom, mapType, bounds } = props.options;
     if (state.map || node === null) {
       return;
     }
@@ -22,12 +50,15 @@ const KakaoMap = props => {
       center: new kakao.maps.LatLng(lat, lng)
     });
 
-    if (zoom) {
-      map.addControl(
-        new kakao.maps.ZoomControl(),
-        kakao.maps.ControlPosition[zoom]
-      );
-    }
+    addZoomControl(map, kakao, zoom);
+    addMapTypeControl(map, kakao, mapType);
+    setLatLngBounds(map, kakao, bounds);
+
+    const zoomChange = () => {
+      if (onZoomChang) onZoomChang(map);
+    };
+    kakao.maps.event.addListener(map, "zoom_changed", zoomChange);
+
     setState({ map, kakao });
   }, []);
 

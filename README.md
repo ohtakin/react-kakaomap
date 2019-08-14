@@ -6,7 +6,9 @@
 
 KakaoMap 사용 시 props에 options 적용
 
-    options={{ lng, lat }
+    options={{ lng, lat, level, zoom, bounds }
+
+    bounds=[{ lat, lng }, { lat, lng } ...]
 
 ### App.css
 
@@ -29,7 +31,7 @@ KakaoMap 사용 시 props에 options 적용
     function App() {
       return (
         <div className="App">
-          <Kakao options={{ lng, lat, level: integer, zoom: string }} />
+          <Kakao options={{ lng, lat, level: integer, zoom: string, bounds: array }} />
         </div>
       );
     }
@@ -57,9 +59,13 @@ or
 
 ## - Marker
 
-기본 Marker 사용 시 props에 options 적용
+기본 Marker 사용 시 props에 options 적용.
 
     options={{ lat, lng, image }}
+
+delay간격으로 map 또는 cluster에 추가됨.
+
+    delay=millisecond
 
 MarkerImage 사용시 options에 image 추가.
 
@@ -77,7 +83,7 @@ Marker
 
 ## - MarkerClusterer
 
-MarkerClusterer 사용 시 props에 options 적용
+MarkerClusterer 사용 시 props에 options 적용.
 
     const options = {
       gridSize: integer
@@ -96,7 +102,7 @@ MarkerClusterer
 
 ## - CustomOverlay
 
-CustomOverlay 사용 시 props에 options 적용
+CustomOverlay 사용 시 props에 options 적용.
 
     ...
     <CustomOverlay
@@ -106,18 +112,39 @@ CustomOverlay 사용 시 props에 options 적용
 
 ## - Polyline
 
-Polyline 사용 시 props에 options 적용
+Polyline 사용 시 props에 options 적용.
+
+delay 간격으로 path가 추가되 그려짐.
+
+    delay=millisecond
+
+bounds 가 true의 경우 path가 자도안에 나타나도록 설정. false의 경우 path의 첫번째 값이 map의 중앙에 오도록 설정.
+
+    bounds=boolean
+
+Polyline
 
     ...
     <Polyline
+      bounds={true}
+      delay={10}
       options={{ path, strokeColor: #rgb, strokeWeight: integer }}
     />
     ...
 
 ## - InfoWindoWithMarker
 
-InfoWindoWithMarker 사용 시 props에 options 적용
-Marker 'onMouseOver', 'onMouseOut' event 발생 시 InfoWindo 'open', 'close' 동작
+InfoWindoWithMarker 사용 시 props에 options 적용.
+
+    options={{ lat, lng, content, image: { url, width, height }}}
+
+Marker 'onMouseOver', 'onMouseOut' event 발생 시 InfoWindo 'open', 'close' 동작.
+
+기본 delay후 map 또는 cluster에 추가됨.
+
+    delay=millisecond
+
+InfoWindoWithMarker
 
     ...
     <InfoWindoWithMarker
