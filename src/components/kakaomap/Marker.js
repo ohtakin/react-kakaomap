@@ -1,8 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { MapContext } from "./KakaoMap";
 import { MarkerClustererContext } from "./MarkerClusterer";
-import { interval } from "rxjs";
-import { take } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 const Marker = props => {
   const { kakao, map } = useContext(MapContext);
@@ -23,6 +22,15 @@ const Marker = props => {
     marker.setImage(markerImage);
   };
 
+  const delayObservable = delay => {
+    return new Observable(observer => {
+      setTimeout(() => {
+        observer.next(delay);
+        observer.complete();
+      }, delay);
+    });
+  };
+
   useEffect(() => {
     const { onMouseOver, onMouseOut, options, delay } = props;
     const { lat, lng, image } = options;
@@ -31,9 +39,12 @@ const Marker = props => {
     });
     if (image) setMarkerImage(marker, image);
 
-    const delayedTime = interval(delay ? delay : 0);
-    delayedTime.pipe(take(1)).subscribe(x => {
-      clusterer ? clusterer.addMarker(marker) : marker.setMap(map);
+    const subscription = delayObservable(delay ? delay : 0).subscribe({
+      next(x) {},
+      error(err) {},
+      complete() {
+        clusterer ? clusterer.addMarker(marker) : marker.setMap(map);
+      }
     });
 
     const mouseOver = () => {
@@ -48,6 +59,7 @@ const Marker = props => {
     setState({ ...state, marker });
 
     return () => {
+      subscription.unsubscribe();
       marker.setMap(null);
       kakao.maps.event.removeListener(marker, "mouseover", mouseOver);
       kakao.maps.event.removeListener(marker, "mouseout", mouseOut);
