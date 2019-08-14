@@ -1,4 +1,4 @@
-import React, { createRef, useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { MapContext } from "./KakaoMap";
 
 const CustomOverlay = props => {
@@ -9,12 +9,15 @@ const CustomOverlay = props => {
     map
   });
 
-  const wrapperHTML = createRef();
   useEffect(() => {
     const { lat, lng } = props.options;
+    if (state.overlay !== null) return;
+    const content = document.createElement("div");
+    content.className = props.className;
+    content.innerHTML = props.options.content;
     const overlay = new kakao.maps.CustomOverlay({
       position: new kakao.maps.LatLng(lat, lng),
-      content: wrapperHTML.current
+      content: content
     });
     overlay.setMap(map);
     setState({ ...state, overlay });
@@ -30,11 +33,7 @@ const CustomOverlay = props => {
     overlay.setPosition(new kakao.maps.LatLng(lat, lng));
   }, [props.options]);
 
-  return (
-    <div className={props.className} ref={wrapperHTML}>
-      {props.options.content}
-    </div>
-  );
+  return null;
 };
 
 export default CustomOverlay;

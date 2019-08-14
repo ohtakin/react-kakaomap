@@ -22,9 +22,12 @@ const InfoWindoWithMarker = props => {
 
   useEffect(() => {
     const { lat, lng } = props.options;
+    const content = document.createElement("div");
+    content.className = props.className;
+    content.innerHTML = props.options.content;
     const infoWindow = new kakao.maps.InfoWindow({
       position: new kakao.maps.LatLng(lat, lng),
-      content: props.options.content
+      content: content
     });
     setState({ ...state, infoWindow });
     return () => {
@@ -34,6 +37,7 @@ const InfoWindoWithMarker = props => {
 
   return state.infoWindow === null ? null : (
     <Marker
+      delay={props.delay}
       onMouseOver={onMouseOver}
       onMouseOut={onMouseOut}
       options={props.options}
