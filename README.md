@@ -1,4 +1,4 @@
-# Kakao map api 사용 샘플입니다.
+# Kakao map api 사용 샘플입니다...
 
 '.env.development', '.env.production' 파일에 REACT_APP_KAKAO_API_KEY=apikey 추가 필요합니다.
 
