@@ -1,26 +1,28 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useState, Fragment } from "react";
 import "./App.css";
-import { useKakao } from "./components";
 import {
-  Marker,
+  withJs,
+  withKakaoMap,
+  KakaoMap,
   MarkerClusterer,
+  InfoWindoWithMarker,
   CustomOverlay,
-  Polyline,
-  InfoWindoWithMarker
-} from "./components/kakaomap";
+  Polyline
+} from "react-kakaomap-api";
+import { FullScreen } from "./components/fullscreen";
 import { vehicles } from "./data/vehicles";
 import { path } from "./data/path";
 
+const Kakao = withJs(
+  `//dapi.kakao.com/v2/maps/sdk.js?appkey=${
+    process.env.REACT_APP_KAKAO_API_KEY
+  }&libraries=services,clusterer,drawing&autoload=false`
+)(withKakaoMap(KakaoMap));
+
 function App() {
   const gps = { lat: 37.54074492224992, lng: 126.96414483172607 };
-  const Kakao = useKakao(
-    `//dapi.kakao.com/v2/maps/sdk.js?appkey=${
-      process.env.REACT_APP_KAKAO_API_KEY
-    }&libraries=services,clusterer,drawing&autoload=false`
-  );
-  const [vehicleData, setvehicleData] = useState(vehicles);
   const bounds = [];
-  const Markers = vehicleData.map(({ lat, lng, plateNumber }, index) => {
+  const Markers = vehicles.map(({ lat, lng, plateNumber }, index) => {
     bounds.push({ lat, lng });
     return (
       <Fragment key={index}>
@@ -60,7 +62,6 @@ function App() {
 
   const onZoomChang = map => {
     const level = map.getLevel();
-    console.log("level: ", level);
   };
 
   return (
@@ -70,7 +71,7 @@ function App() {
         options={{
           lat: gps.lat,
           lng: gps.lng,
-          bounds: bounds,
+          // bounds: bounds,
           zoom: "BOTTOMRIGHT",
           mapType: "TOPLEFT"
         }}
@@ -78,10 +79,11 @@ function App() {
         <MarkerClusterer options={options}>{Markers}</MarkerClusterer>
         <Polyline
           delay={10}
-          // bounds={false}
+          bounds={true}
           options={{ path: path, strokeColor: "#0000ff", strokeWeight: 4 }}
         />
       </Kakao>
+      <FullScreen id="full-screen" canvas="map-canvas" />
     </div>
   );
 }
