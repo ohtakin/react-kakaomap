@@ -1,3 +1,5 @@
+### react-kakaomap-api 활용 샘플 프로젝트입니다.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
